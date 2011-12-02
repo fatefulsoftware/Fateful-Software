@@ -30,8 +30,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "Three20/TTStyle.h"
-#import "Three20/TTButton.h"
+#import "Three20/Three20.h"
 #import <CoreGraphics/CoreGraphics.h>
 
 @interface BetterButton : TTButton {

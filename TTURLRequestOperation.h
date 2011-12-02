@@ -52,5 +52,6 @@
 @property (nonatomic, retain) NSString *precachePath;
 
 + (TTURLRequest *)three20RequestForRequest:(id)request;
+- (NSData *)sendRequest;
 
 @end

@@ -30,86 +30,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "Three20/Three20.h"
 #import "TTURLRequestOperation.h"
-#import "Three20/TTURLRequest.h"
-#import "Three20/TTURLResponse.h"
-#import "Three20/TTURLCache.h"
-
-@interface TTURLRequestOperation (Private)
-
-- (NSData *)sendRequest;
-
-@end
-
-@implementation TTURLRequestOperation (Private)
-
-#pragma mark Invocation
-
-- (NSData *)sendRequest {
-	NSURLRequest *fileRequest;
-	TTURLDataResponse *dataResponse;
-	
-	if ([request isKindOfClass:[NSURLRequest class]]) {
-		if (precache && [[TTURLCache sharedCache] hasDataForURL:[[request URL] absoluteString]]) // just want to make sure there is data. don't need to fetch from cache or net
-			return nil;
-		
-		[image release];
-		image = [[[TTURLCache sharedCache] imageForURL:[[request URL] absoluteString] fromDisk:NO] retain];
-		
-		if (image)
-			return nil;
-		
-		if ([[request URL] isFileURL]) {		
-			[data release];
-			data = [[NSData alloc] initWithContentsOfURL:[request URL]];
-			
-			return data;
-		}
-	} else if ([request isKindOfClass:[TTURLRequest class]]) {
-		if (precache && [[TTURLCache sharedCache] hasDataForURL:self.three20Request.URL]) // just want to make sure there is data. don't need to fetch from cache or net
-			return nil;
-		
-		[image release];
-		image = [[[TTURLCache sharedCache] imageForURL:self.three20Request.URL fromDisk:NO] retain];
-		
-		if (image)
-			return nil;
-		
-		fileRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.three20Request.URL]];
-		
-		if ([[fileRequest URL] isFileURL]) {		
-			[data release];
-			data = [[NSData alloc] initWithContentsOfURL:[fileRequest URL]];
-			
-			return data;
-		}
-	} else {
-		return nil;
-	}
-	
-	dataResponse = [TTURLDataResponse new];
-	self.three20Request.response = dataResponse;
-	[dataResponse release];
-	
-	[self.three20Request sendSynchronously];
-	
-	[data release];
-	data = [((TTURLDataResponse *)self.three20Request.response).data retain];
-	
-	if (data) {
-		error = NO;
-	} else {
-		data = [[NSData alloc] initWithContentsOfFile:precachePath];
-
-		error = data == nil;
-	}
-	
-	return data;
-}
-
-#pragma mark -
-
-@end
 
 @implementation TTURLRequestOperation
 
@@ -164,9 +86,9 @@
 			image = [[UIImage alloc] initWithData:data];
 			
 			if (image)
-				[[TTURLCache sharedCache] storeImage:image forURL:self.three20Request.URL];
+				[[TTURLCache sharedCache] storeImage:image forURL:self.three20Request.urlPath];
 		} else {
-			image = [[[TTURLCache sharedCache] imageForURL:self.three20Request.URL fromDisk:NO] retain];
+			image = [[[TTURLCache sharedCache] imageForURL:self.three20Request.urlPath fromDisk:NO] retain];
 		}
 	}
 	
@@ -196,7 +118,7 @@
 	
 	if ([URL isFileURL]) {		
 		[data release];
-		data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:self.three20Request.URL]];
+		data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:self.three20Request.urlPath]];
 		
 		[super notifyFinished];
 		
@@ -204,6 +126,72 @@
 	}
 	
 	[super queueOnto:queue];
+}
+
+#pragma mark -
+
+#pragma mark Invocation
+
+- (NSData *)sendRequest {
+	NSURLRequest *fileRequest;
+	TTURLDataResponse *dataResponse;
+	
+	if ([request isKindOfClass:[NSURLRequest class]]) {
+		if (precache && [[TTURLCache sharedCache] hasDataForURL:[[request URL] absoluteString]]) // just want to make sure there is data. don't need to fetch from cache or net
+			return nil;
+		
+		[image release];
+		image = [[[TTURLCache sharedCache] imageForURL:[[request URL] absoluteString] fromDisk:NO] retain];
+		
+		if (image)
+			return nil;
+		
+		if ([[request URL] isFileURL]) {		
+			[data release];
+			data = [[NSData alloc] initWithContentsOfURL:[request URL]];
+			
+			return data;
+		}
+	} else if ([request isKindOfClass:[TTURLRequest class]]) {
+		if (precache && [[TTURLCache sharedCache] hasDataForURL:self.three20Request.urlPath]) // just want to make sure there is data. don't need to fetch from cache or net
+			return nil;
+		
+		[image release];
+		image = [[[TTURLCache sharedCache] imageForURL:self.three20Request.urlPath fromDisk:NO] retain];
+		
+		if (image)
+			return nil;
+		
+		fileRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.three20Request.urlPath]];
+		
+		if ([[fileRequest URL] isFileURL]) {		
+			[data release];
+			data = [[NSData alloc] initWithContentsOfURL:[fileRequest URL]];
+			
+			return data;
+		}
+	} else {
+		return nil;
+	}
+	
+	dataResponse = [TTURLDataResponse new];
+	self.three20Request.response = dataResponse;
+	[dataResponse release];
+	
+	[self.three20Request sendSynchronously];
+	
+	[data release];
+	data = [((TTURLDataResponse *)self.three20Request.response).data retain];
+	
+	if (data) {
+		error = NO;
+	} else {
+		data = [[NSData alloc] initWithContentsOfFile:precachePath];
+        
+		error = data == nil;
+	}
+	
+	return data;
 }
 
 #pragma mark -

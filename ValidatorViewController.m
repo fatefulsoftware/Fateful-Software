@@ -270,7 +270,7 @@
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id))
+	while ((field = va_arg(argument_list, id)))
 		[self addRequiredField:field];
 	
 	va_end(argument_list);
@@ -300,7 +300,7 @@
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id))
+	while ((field = va_arg(argument_list, id)))
 		[self addEmailField:field];
 	
 	va_end(argument_list);

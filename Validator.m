@@ -85,7 +85,7 @@ NSString *const ValidatorRuleRequired = @"Required", *const ValidatorRuleEmail =
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id))
+	while ((field = va_arg(argument_list, id)))
 		[requiredFields addObject:field];
 	
 	va_end(argument_list);
@@ -103,7 +103,7 @@ NSString *const ValidatorRuleRequired = @"Required", *const ValidatorRuleEmail =
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id))
+	while ((field = va_arg(argument_list, id)))
 		[emailFields addObject:field];
 	
 	va_end(argument_list);
@@ -137,7 +137,7 @@ NSString *const ValidatorRuleRequired = @"Required", *const ValidatorRuleEmail =
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id)) {
+	while ((field = va_arg(argument_list, id))) {
 		if (i % 2 == 0) {
 			validatorField = [ValidatorField new];
 			validatorField.field = lastField;
@@ -178,7 +178,7 @@ NSString *const ValidatorRuleRequired = @"Required", *const ValidatorRuleEmail =
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id)) {
+	while ((field = va_arg(argument_list, id))) {
 		if (i % 2 == 0) {
 			validatorField = [ValidatorField new];
 			validatorField.field = lastField;
@@ -219,7 +219,7 @@ NSString *const ValidatorRuleRequired = @"Required", *const ValidatorRuleEmail =
 	
 	va_start(argument_list, field);
 	
-	while (field = va_arg(argument_list, id)) {
+	while ((field = va_arg(argument_list, id))) {
 		if (i % 2 == 0) {
 			validatorField = [ValidatorField new];
 			validatorField.field = lastField;

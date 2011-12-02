@@ -31,8 +31,7 @@
 #import "BetterButton.h"
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "Three20/TTStyle.h"
-#import "Three20/TTShape.h"
+#import "Three20/Three20.h"
 #import <CoreGraphics/CoreGraphics.h>
 
 @implementation BetterButton
@@ -93,12 +92,12 @@
 	return [self titleForState:UIControlStateNormal];
 }
 
-- (void)setTitle:(NSString *)title {
-	[self setTitle:title forState:UIControlStateNormal];
+- (void)setTitle:(NSString *)value {
+	[self setTitle:value forState:UIControlStateNormal];
 }
 
-- (void)setTitle:(NSString *)title forState:(UIControlState)state {
-	[super setTitle:title forState:state];
+- (void)setTitle:(NSString *)value forState:(UIControlState)state {
+	[super setTitle:value forState:state];
 	
 	[self updateAppearance];
 }
@@ -218,7 +217,7 @@
 
 - (TTStyle *)style {
 	NSMutableArray *styles;
-	TTStyle *style, *currentStyle, *lastStyle;
+	TTStyle *s, *currentStyle, *lastStyle;
 	
 	styles = [NSMutableArray arrayWithCapacity:1];
 	
@@ -241,11 +240,11 @@
 	if ([styles count] == 0)
 		return nil;
 	
-	style = [styles objectAtIndex:0];
+	s = [styles objectAtIndex:0];
 	
 	[styles removeObjectAtIndex:0];
 	
-	lastStyle = style;
+	lastStyle = s;
 	
 	for (currentStyle in styles) {
 		lastStyle.next = currentStyle;
@@ -253,7 +252,7 @@
 		lastStyle = currentStyle;
 	}
 	
-	return style;
+	return s;
 }
 
 - (TTTextStyle *)textStyle {
